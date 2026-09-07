@@ -80,41 +80,47 @@ export default function ArtistSelect({
         />
       </div>
 
-      <div className="artist-info" key={activeArtist.id}>
-        <div className="artist-info-name">{activeArtist.name}</div>
-        <div className="artist-info-eyebrow">
-          <DoodleStar className="artist-info-star" size={22} />
-          {activeArtist.movement} · {activeArtist.era}
+      {/* On mobile this wrapper fills whatever vertical space is left below
+          the gallery and spaces its three children evenly (see .lower-content
+          in ArtistSelect.css) — that's what replaces the old single dead
+          gap before the footer with two balanced ones. On desktop it's
+          `display: contents`, so it's invisible to layout and everything
+          behaves exactly as before. */}
+      <div className="lower-content">
+        <div className="artist-info" key={activeArtist.id}>
+          <div className="artist-info-name">{activeArtist.name}</div>
+          <div className="artist-info-eyebrow">
+            <DoodleStar className="artist-info-star" size={22} />
+            {activeArtist.movement} · {activeArtist.era}
+          </div>
+          <p className="artist-info-tagline">{activeArtist.tagline}</p>
         </div>
-        <p className="artist-info-tagline">{activeArtist.tagline}</p>
-      </div>
 
-      <div className="artist-dots" role="tablist" aria-label="Artists">
-        {artists.map((a, i) => (
-          <button
-            key={a.id}
-            type="button"
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={a.name}
-            className={`artist-dot ${i === activeIndex ? 'is-active' : ''}`}
-            onClick={() => onSelectArtist(a.id)}
-          />
-        ))}
-      </div>
+        <div className="artist-dots" role="tablist" aria-label="Artists">
+          {artists.map((a, i) => (
+            <button
+              key={a.id}
+              type="button"
+              role="tab"
+              aria-selected={i === activeIndex}
+              aria-label={a.name}
+              className={`artist-dot ${i === activeIndex ? 'is-active' : ''}`}
+              onClick={() => onSelectArtist(a.id)}
+            />
+          ))}
+        </div>
 
-      {/* Mobile-only footer: the same credit line shown inline in the header
-          on desktop (see .header-sub-wrap, hidden on mobile via CSS) moves
-          all the way to the bottom of the screen here instead — both to
-          read as an intentional footer rather than a second header line,
-          and because `margin-top: auto` on this element is what soaks up
-          the leftover vertical space below the dots instead of leaving it
-          empty. */}
-      <div className="mobile-credit-footer">
-        <div className="header-sub">
-          <span>
-            Made with <DoodleHeart className="heart" /> by Mojtaba
-          </span>
+        {/* Mobile-only footer: the same credit line shown inline in the
+            header on desktop (see .header-sub-wrap, hidden on mobile via
+            CSS) moves all the way to the bottom of the screen here instead,
+            to read as an intentional footer rather than a second header
+            line. */}
+        <div className="mobile-credit-footer">
+          <div className="header-sub">
+            <span>
+              Made with <DoodleHeart className="heart" /> by Mojtaba
+            </span>
+          </div>
         </div>
       </div>
     </div>
