@@ -204,6 +204,14 @@
   }
 }
 
+/* Transparent on desktop: the wrapper itself takes no part in layout, so
+   artist-info / artist-dots / mobile-credit-footer behave exactly as if it
+   weren't there. Only becomes a real flex box on mobile (see media query
+   below). */
+.lower-content {
+  display: contents;
+}
+
 /* Hidden on desktop — the credit line lives inline in the header there
    (see .header-sub-wrap). Only shown, as a bottom-of-screen footer, on
    mobile (see the @media block below). */
@@ -229,13 +237,10 @@
     padding-top: max(14px, env(safe-area-inset-top));
     padding-bottom: max(14px, env(safe-area-inset-bottom));
     /* Pinned to the top, like any normal app header — not centered as a
-       block. The gap scales with viewport height (rather than a fixed
-       14px) so the breathing room between sections grows on tall phones
-       instead of collapsing into one big unstyled void right before the
-       footer — the rest of that leftover space is still absorbed by the
-       footer's own margin-top: auto below, but there's now much less of
-       it left to absorb. */
-    gap: clamp(14px, 3.6vh, 28px);
+       block. This is just the fixed gap between header/gallery/the lower
+       block now; the leftover space on tall phones is handled inside
+       .lower-content below instead of piling up here. */
+    gap: 18px;
   }
 
   /* --- Header: logo + icons only on mobile — the credit line moves to
@@ -246,11 +251,14 @@
     align-items: flex-start;
     gap: 8px;
   }
+  /* Sized up so the logo reads as the header's dominant element again —
+     at the old 22px it had become visually lighter than the enlarged
+     icon cluster next to it. */
   .wordmark {
-    font-size: 25px;
+    font-size: 30px;
   }
   .wordmark-squiggle {
-    width: 58px;
+    width: 66px;
   }
   .header-right {
     flex: 0 0 auto;
@@ -277,15 +285,37 @@
     margin-top: 0;
     border-radius: var(--radius-md);
   }
+
+  /* --- Everything below the gallery, as one unit ---------------------
+     `flex: 1 1 auto` makes this claim all the vertical space left over
+     after the header and gallery take theirs, and `justify-content:
+     space-between` splits *that* leftover space into two even gaps (one
+     above the dots, one above the footer) instead of letting it collect
+     unclaimed in a single spot. This is what actually fixes the "empty
+     lower half" — it scales correctly on any phone height with no vh
+     guessing, because flexbox is doing the measuring, not a clamp(). */
+  .lower-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 auto;
+    min-height: 0;
+    justify-content: space-between;
+  }
   .artist-info {
-    margin-top: clamp(18px, 5vh, 34px);
+    margin-top: 0;
   }
   .artist-info-name {
     font-size: clamp(24px, 7.5vw, 32px);
   }
   .artist-info-eyebrow {
     margin-top: 6px;
-    font-size: 13px;
+    font-size: 14px;
+    gap: 6px;
+  }
+  .artist-info-star {
+    width: 18px;
+    height: 18px;
   }
   .artist-info-tagline {
     margin-top: 8px;
@@ -295,9 +325,11 @@
   /* Dots come back on mobile (desktop relies on the wide gallery itself
      for a sense of position, but with several small peeking cards a
      phone screen benefits from an explicit position indicator) — sized
-     to match the rest of the enlarged mobile layout. */
+     to match the rest of the enlarged mobile layout. Vertical position
+     between the info block and the footer is now handled by
+     .lower-content's space-between, not a margin here. */
   .artist-dots {
-    margin-top: clamp(14px, 4vh, 28px);
+    margin-top: 0;
     gap: 10px;
   }
   .artist-dot {
@@ -308,16 +340,14 @@
     width: 24px;
   }
 
-  /* Footer credit line: pinned to the very bottom of the screen.
-     `margin-top: auto` is what makes this work — in a flex column, the
-     first item to get an auto top-margin absorbs *all* remaining free
-     space above it, so instead of that space sitting empty below the
-     dots, it becomes the gap that pushes this footer down to the floor. */
+  /* Footer credit line: the last of .lower-content's three children, so
+     space-between naturally pins it to the bottom of that block — no
+     margin-top: auto needed here anymore. */
   .mobile-credit-footer {
     display: flex;
     justify-content: center;
-    margin-top: auto;
-    padding-top: clamp(20px, 6vh, 40px);
+    margin-top: 0;
+    padding-top: 12px;
   }
   .mobile-credit-footer .header-sub {
     font-size: 15px;
@@ -332,10 +362,10 @@
 
 @media (max-width: 400px) {
   .wordmark {
-    font-size: 21px;
+    font-size: 25px;
   }
   .wordmark-squiggle {
-    width: 46px;
+    width: 54px;
   }
   .header-right {
     gap: 8px;
