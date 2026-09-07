@@ -297,7 +297,7 @@
        the gallery card, and everything below it (name/tagline/dots/
        footer, which all follow in this same flex column), down as a
        group rather than sitting close under the header row. */
-    margin-top: 56px;
+    margin-top: 64px;
     border-radius: var(--radius-md);
   }
 
