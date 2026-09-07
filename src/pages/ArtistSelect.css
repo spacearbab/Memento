@@ -204,6 +204,13 @@
   }
 }
 
+/* Hidden on desktop — the credit line lives inline in the header there
+   (see .header-sub-wrap). Only shown, as a bottom-of-screen footer, on
+   mobile (see the @media block below). */
+.mobile-credit-footer {
+  display: none;
+}
+
 /* ---------------------------------------------------------------------
    Mobile: this is its own layout, not a shrunk-down copy of the desktop
    one. Desktop puts everything (wordmark, credit line, icon buttons) on
@@ -228,16 +235,13 @@
     gap: 14px;
   }
 
-  /* --- Header: logo + icons on row 1, credit line on row 2 --- */
+  /* --- Header: logo + icons only on mobile — the credit line moves to
+     a footer at the bottom of the screen instead (see .mobile-credit-footer),
+     so it no longer needs to be reserved for/centered under the header. --- */
   .artist-select-header {
-    position: relative;
     flex-wrap: nowrap;
     align-items: flex-start;
     gap: 8px;
-    /* Reserves room below row 1 for the credit line, which is positioned
-       absolutely (see .header-sub-wrap) so it can center on the *whole*
-       header instead of being trapped inside header-right's narrower box. */
-    margin-bottom: 26px;
   }
   .wordmark {
     font-size: 22px;
@@ -249,28 +253,7 @@
     flex: 0 0 auto;
     gap: 8px;
   }
-  /* Taken out of normal flow and centered on the full header width, not
-     on header-right's own (right-hand, icon-sized) box — that mismatch
-     was what made this line look disconnected from the logo, off-center
-     relative to the page as a whole. */
   .header-sub-wrap {
-    position: absolute;
-    left: 50%;
-    top: 100%;
-    transform: translateX(-50%);
-    margin-top: 6px;
-    align-items: center;
-    white-space: nowrap;
-  }
-  .header-sub {
-    font-size: 12.5px;
-    gap: 5px;
-  }
-  .header-sub .heart {
-    width: 12px;
-    height: 12px;
-  }
-  .header-sub-squiggle {
     display: none;
   }
 
@@ -312,6 +295,27 @@
   }
   .artist-dot.is-active {
     width: 16px;
+  }
+
+  /* Footer credit line: pinned to the very bottom of the screen.
+     `margin-top: auto` is what makes this work — in a flex column, the
+     first item to get an auto top-margin absorbs *all* remaining free
+     space above it, so instead of that space sitting empty below the
+     dots, it becomes the gap that pushes this footer down to the floor. */
+  .mobile-credit-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 18px;
+  }
+  .mobile-credit-footer .header-sub {
+    font-size: 12.5px;
+    gap: 5px;
+    color: var(--text-dim);
+  }
+  .mobile-credit-footer .heart {
+    width: 12px;
+    height: 12px;
   }
 }
 
