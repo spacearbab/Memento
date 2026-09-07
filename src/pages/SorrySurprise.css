@@ -160,9 +160,31 @@
   inset: -2px -3px;
   border-radius: 6px;
   background-color: var(--glass-bg-strong);
-  background-image: radial-gradient(circle, var(--text-dim) 1px, transparent 1.3px);
-  background-size: 5px 5px;
-  animation: spoiler-shimmer 0.9s linear infinite;
+  /* Three dot layers, each a different size/spacing, so they don't read as
+     one regular grid — that's what a single radial-gradient layer looks
+     like once it's animated: a handful of evenly-spaced dots gliding
+     uniformly in one direction, which is the "unrealistic" look being
+     fixed here. Each layer below gets its own direction and its own speed
+     (see the two animations further down), so at any moment they're
+     overlapping in different, unrelated positions rather than moving as
+     one block — that's what actually reads as static/noise instead of a
+     conveyor belt of dots. */
+  background-image:
+    radial-gradient(circle, var(--text-dim) 1px, transparent 1.3px),
+    radial-gradient(circle, var(--text-dim) 0.7px, transparent 1.05px),
+    radial-gradient(circle, var(--text-dim) 1.2px, transparent 1.5px);
+  background-size:
+    5px 5px,
+    7px 6px,
+    4px 7px;
+  background-position:
+    0 0,
+    0 0,
+    0 0;
+  animation:
+    spoiler-noise-a 0.5s steps(4) infinite,
+    spoiler-noise-b 0.35s steps(3) infinite reverse,
+    spoiler-flicker 0.22s steps(2) infinite;
 }
 
 .spoiler.is-revealed::before {
@@ -175,12 +197,85 @@
   outline-offset: 2px;
 }
 
-@keyframes spoiler-shimmer {
+/* Drives layers 1 and 2 (the first two background-image entries) — jagged,
+   non-linear waypoints (not a straight line in any one direction) combined
+   with `steps()` above (rather than the default smooth easing) is what
+   makes this jump from spot to spot like flickering static instead of
+   panning smoothly like a conveyor belt. Layer 3 is deliberately left at
+   `0 0` here (it's driven by spoiler-noise-b instead), so the two
+   animations move different layers on different paths/timings. */
+@keyframes spoiler-noise-a {
   0% {
-    background-position: 0 0;
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+  25% {
+    background-position:
+      2px -3px,
+      -3px 2px,
+      0 0;
+  }
+  50% {
+    background-position:
+      -3px 1px,
+      1px -4px,
+      0 0;
+  }
+  75% {
+    background-position:
+      3px 3px,
+      -2px -3px,
+      0 0;
   }
   100% {
-    background-position: -10px 0;
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+}
+
+/* Drives only the 3rd layer, on its own unrelated set of waypoints/timing
+   (a different duration and `steps()` count than spoiler-noise-a above),
+   so it never happens to move in lockstep with the first two layers. */
+@keyframes spoiler-noise-b {
+  0% {
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+  33% {
+    background-position:
+      0 0,
+      0 0,
+      -2px 3px;
+  }
+  66% {
+    background-position:
+      0 0,
+      0 0,
+      3px -2px;
+  }
+  100% {
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+}
+
+/* A quick, irregular-feeling opacity flicker on top of the movement —
+   static doesn't just drift, it also flares and dims unevenly. */
+@keyframes spoiler-flicker {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
