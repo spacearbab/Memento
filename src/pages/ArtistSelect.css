@@ -297,16 +297,16 @@
        the gallery card, and everything below it (name/tagline/dots/
        footer, which all follow in this same flex column), down as a
        group rather than sitting close under the header row. */
-    margin-top: 116px;
+    margin-top: 106px;
     border-radius: var(--radius-md);
     /* Mobile-only: noticeably more see-through than this card's own
        desktop glass (blur(22px) saturate(140%), full-strength
        --glass-bg tint) — a lighter blur so the background reads sharper/
        clearer through it, plus a diluted version of the frost tint
        (color-mix cuts it to ~55%) so it's less milky/opaque overall. */
-    background: color-mix(in srgb, var(--glass-bg) 55%, transparent);
-    backdrop-filter: blur(10px) saturate(130%);
-    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    background: color-mix(in srgb, var(--glass-bg) 10%, transparent);
+    backdrop-filter: blur(2px) saturate(102%);
+    -webkit-backdrop-filter: blur(2px) saturate(102%);
     box-shadow:
       0 1px 0 var(--highlight-line) inset,
       0 30px 80px var(--shadow-color),
