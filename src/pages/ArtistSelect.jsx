@@ -102,6 +102,21 @@ export default function ArtistSelect({
           />
         ))}
       </div>
+
+      {/* Mobile-only footer: the same credit line shown inline in the header
+          on desktop (see .header-sub-wrap, hidden on mobile via CSS) moves
+          all the way to the bottom of the screen here instead — both to
+          read as an intentional footer rather than a second header line,
+          and because `margin-top: auto` on this element is what soaks up
+          the leftover vertical space below the dots instead of leaving it
+          empty. */}
+      <div className="mobile-credit-footer">
+        <div className="header-sub">
+          <span>
+            Made with <DoodleHeart className="heart" /> by Mojtaba
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
