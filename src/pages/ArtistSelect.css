@@ -282,25 +282,27 @@
     width: 100%;
     aspect-ratio: 6 / 5;
     max-height: 46vh;
-    margin-top: 0;
+    /* A small deliberate nudge down from the header, on top of the
+       .artist-select gap above — settles the gallery instead of having
+       it sit glued right under the header row. */
+    margin-top: 14px;
     border-radius: var(--radius-md);
   }
 
   /* --- Everything below the gallery, as one unit ---------------------
      `flex: 1 1 auto` makes this claim all the vertical space left over
-     after the header and gallery take theirs, and `justify-content:
-     space-between` splits *that* leftover space into two even gaps (one
-     above the dots, one above the footer) instead of letting it collect
-     unclaimed in a single spot. This is what actually fixes the "empty
-     lower half" — it scales correctly on any phone height with no vh
-     guessing, because flexbox is doing the measuring, not a clamp(). */
+     after the header and gallery take theirs. The name/eyebrow/tagline
+     and the dots stay grouped together with a small fixed gap between
+     them (see .artist-dots below) since they read as one unit; the
+     footer's own `margin-top: auto` then absorbs whatever's left as a
+     single calm breathing gap before it, instead of the leftover space
+     being split into two separate, disconnected-looking gaps. */
   .lower-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex: 1 1 auto;
     min-height: 0;
-    justify-content: space-between;
   }
   .artist-info {
     margin-top: 0;
@@ -325,11 +327,10 @@
   /* Dots come back on mobile (desktop relies on the wide gallery itself
      for a sense of position, but with several small peeking cards a
      phone screen benefits from an explicit position indicator) — sized
-     to match the rest of the enlarged mobile layout. Vertical position
-     between the info block and the footer is now handled by
-     .lower-content's space-between, not a margin here. */
+     to match the rest of the enlarged mobile layout, and kept close to
+     the info block above with a small fixed gap. */
   .artist-dots {
-    margin-top: 0;
+    margin-top: 16px;
     gap: 10px;
   }
   .artist-dot {
@@ -340,13 +341,16 @@
     width: 24px;
   }
 
-  /* Footer credit line: the last of .lower-content's three children, so
-     space-between naturally pins it to the bottom of that block — no
-     margin-top: auto needed here anymore. */
+  /* Footer credit line: pinned to the very bottom of the screen.
+     `margin-top: auto` is what makes this work — in a flex column, the
+     first item to get an auto top-margin absorbs *all* remaining free
+     space above it, so the leftover space below the dots becomes one
+     single, calm gap that pushes this footer down to the floor, rather
+     than being split up. */
   .mobile-credit-footer {
     display: flex;
     justify-content: center;
-    margin-top: 0;
+    margin-top: auto;
     padding-top: 12px;
   }
   .mobile-credit-footer .header-sub {
