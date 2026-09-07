@@ -70,3 +70,16 @@
     display: none;
   }
 }
+
+/* Matches ReplayIntroButton's mobile sizing so the two stay balanced as a
+   pair — bigger tap target, more visible icon. */
+@media (max-width: 640px) {
+  .surprise-button {
+    width: 42px;
+    height: 42px;
+  }
+  .surprise-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}
