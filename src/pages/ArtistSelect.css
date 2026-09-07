@@ -267,6 +267,16 @@
   .header-sub-wrap {
     display: none;
   }
+  /* Home-page-only: scaled up alongside its two neighbors (Replay/Surprise
+     buttons) on phones, keeping the same proportion to them rather than
+     staying at the small desktop size in a much roomier mobile header.
+     Scoped to .artist-select-header specifically so this does NOT affect
+     the theme toggle on the Intro or ArtistGallery screens, which keep the
+     normal (desktop) 26px size on mobile too. */
+  .artist-select-header .theme-toggle {
+    width: 40px;
+    height: 40px;
+  }
 
   /* --- Gallery: a compact, self-sized card instead of a tall glass panel
      with the actual cards floating in the middle of it. `flex: 1 1 auto`
@@ -282,10 +292,12 @@
     width: 100%;
     aspect-ratio: 6 / 5;
     max-height: 46vh;
-    /* A small deliberate nudge down from the header, on top of the
-       .artist-select gap above — settles the gallery instead of having
-       it sit glued right under the header row. */
-    margin-top: 14px;
+    /* Pushed down noticeably further from the header than before (was
+       14px) — on top of the .artist-select gap above, this is what moves
+       the gallery card, and everything below it (name/tagline/dots/
+       footer, which all follow in this same flex column), down as a
+       group rather than sitting close under the header row. */
+    margin-top: 56px;
     border-radius: var(--radius-md);
   }
 
@@ -389,6 +401,9 @@
 @media (max-width: 640px) and (max-height: 640px) {
   .artist-select {
     gap: 8px;
+  }
+  .gallery-frame {
+    margin-top: 32px;
   }
 }
 
