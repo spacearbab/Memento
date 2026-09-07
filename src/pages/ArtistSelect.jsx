@@ -72,6 +72,13 @@ export default function ArtistSelect({
           // which is what left the oversized empty glass panel around
           // undersized cards.
           itemScale={isMobile ? 0.85 : 1}
+          // The baked-in card label (artist name under each image) is sized
+          // as a fraction of the card's own height, independent of the
+          // `font` pixel value below — see CircularGallery's Title class.
+          // Raised only for mobile, where the label was reading small and
+          // low-contrast next to the rest of the page's now-larger type;
+          // desktop keeps the original ratio untouched.
+          titleScale={isMobile ? 0.19 : 0.15}
           fontUrl="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,500&display=swap"
           font={isMobile ? 'italic 24px Fraunces' : 'italic 32px Fraunces'}
           startIndex={initialIndex}
