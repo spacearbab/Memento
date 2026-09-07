@@ -40,10 +40,13 @@ export default function ArtistSelect({
           <DoodleSquiggle className="wordmark-squiggle" />
         </div>
         <div className="header-right">
-          <div className="header-sub">
-            <span>
-              Made with <DoodleHeart className="heart" /> by Mojtaba
-            </span>
+          <div className="header-sub-wrap">
+            <div className="header-sub">
+              <span>
+                Made with <DoodleHeart className="heart" /> by Mojtaba
+              </span>
+            </div>
+            <DoodleSquiggle className="header-sub-squiggle" />
           </div>
           {onReplayIntro && <ReplayIntroButton onClick={onReplayIntro} />}
           {onOpenSurprise && <SurpriseButton onClick={onOpenSurprise} />}
