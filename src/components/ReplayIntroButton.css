@@ -36,3 +36,18 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
+
+/* On phones this sits in a much sparser header, so it's sized up to read
+   as a proper icon button (and an easier tap target) rather than the
+   compact desktop chip — the inner svg scales up with it since its size
+   is set via width/height rather than the deprecated attribute alone. */
+@media (max-width: 640px) {
+  .replay-intro-button {
+    width: 42px;
+    height: 42px;
+  }
+  .replay-intro-button svg {
+    width: 21px;
+    height: 21px;
+  }
+}
