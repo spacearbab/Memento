@@ -57,11 +57,16 @@ export default function ArtistSelect({
       <div className="gallery-frame">
         <CircularGallery
           items={galleryItems}
-          bend={isMobile ? 0.6 : 2}
+          bend={isMobile ? 0.35 : 2}
           textColor={galleryTextColor}
           borderRadius={0.14}
           scrollEase={0.075}
           scrollSpeed={isMobile ? 1.6 : 2.4}
+          // Mobile gets its own, much smaller card size (independent of the
+          // frame's aspect ratio — see CircularGallery.jsx) so 2–3 cards
+          // peek in side-by-side, Netflix-row style, instead of one card
+          // filling almost the entire screen.
+          itemScale={isMobile ? 0.5 : 1}
           fontUrl="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,500&display=swap"
           font={isMobile ? 'italic 24px Fraunces' : 'italic 32px Fraunces'}
           startIndex={initialIndex}
