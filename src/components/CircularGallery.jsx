@@ -220,7 +220,8 @@ class Media {
     bend,
     textColor,
     borderRadius = 0,
-    font
+    font,
+    itemScale = 1
   }) {
     this.extra = 0;
     this.geometry = geometry;
@@ -237,6 +238,14 @@ class Media {
     this.textColor = textColor;
     this.borderRadius = borderRadius;
     this.font = font;
+    // Card width as a fraction of the viewport, independent of the
+    // container's own aspect ratio. The base "700" size was tuned for a
+    // wide desktop frame — on a narrow/tall mobile frame the same formula
+    // made a single card fill almost the whole width (viewport.width
+    // shrinks with the frame's aspect ratio, so the *fraction* it took up
+    // grew). itemScale lets a caller (see ArtistSelect) dial the card size
+    // down explicitly for mobile so 2–3 cards peek in at once.
+    this.itemScale = itemScale;
     this.createShader();
     this.createMesh();
     this.createTitle();
@@ -389,10 +398,13 @@ class Media {
       }
     }
     this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
+    this.plane.scale.y = (this.viewport.height * (900 * this.scale * this.itemScale)) / this.screen.height;
+    this.plane.scale.x = (this.viewport.width * (700 * this.scale * this.itemScale)) / this.screen.width;
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
-    this.padding = 2;
+    // Scaled by itemScale too so the gap between cards stays proportional
+    // to card size at any itemScale, instead of a fixed gap looking
+    // oversized next to the smaller mobile cards.
+    this.padding = 2 * this.itemScale;
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
@@ -410,6 +422,7 @@ class App {
       font = 'bold 30px Figtree',
       scrollSpeed = 2,
       scrollEase = 0.05,
+      itemScale = 1,
       onItemClick = null,
       onActiveIndexChange = null,
       startIndex = 0
@@ -418,6 +431,7 @@ class App {
     document.documentElement.classList.remove('no-js');
     this.container = container;
     this.scrollSpeed = scrollSpeed;
+    this.itemScale = itemScale;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck, 200);
     // Click-to-select support: fires with the original (non-doubled) item
@@ -436,7 +450,7 @@ class App {
     this.createScene();
     this.onResize();
     this.createGeometry();
-    this.createMedias(items, bend, textColor, borderRadius, font);
+    this.createMedias(items, bend, textColor, borderRadius, font, itemScale);
     // Land directly on a given artist instead of always starting at index 0
     // — e.g. so returning from a gallery re-centers on whichever artist was
     // open, rather than resetting to the first one.
@@ -473,7 +487,7 @@ class App {
       widthSegments: 100
     });
   }
-  createMedias(items, bend = 1, textColor, borderRadius, font) {
+  createMedias(items, bend = 1, textColor, borderRadius, font, itemScale = 1) {
     const defaultItems = [
       { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: 'Bridge' },
       { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Desk Setup' },
@@ -509,7 +523,8 @@ class App {
         bend,
         textColor,
         borderRadius,
-        font
+        font,
+        itemScale
       });
     });
   }
@@ -705,6 +720,7 @@ export default function CircularGallery({
   fontUrl,
   scrollSpeed = 2,
   scrollEase = 0.05,
+  itemScale = 1,
   startIndex = 0,
   onSelect,
   onActiveIndexChange
@@ -747,6 +763,7 @@ export default function CircularGallery({
         font: resolvedFont,
         scrollSpeed,
         scrollEase,
+        itemScale,
         startIndex,
         onItemClick: index => onSelectRef.current && onSelectRef.current(index),
         onActiveIndexChange: index => onActiveIndexChangeRef.current && onActiveIndexChangeRef.current(index)
@@ -762,7 +779,7 @@ export default function CircularGallery({
     // Deliberately excludes onSelect/onActiveIndexChange (see comment above)
     // and textColor (see comment above the appRef declaration).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, bend, borderRadius, font, fontUrl, scrollSpeed, scrollEase, startIndex]);
+  }, [items, bend, borderRadius, font, fontUrl, scrollSpeed, scrollEase, itemScale, startIndex]);
 
   // Repaints the labels in place whenever textColor changes after mount,
   // instead of forcing the effect above to rebuild the scene.
