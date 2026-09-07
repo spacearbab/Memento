@@ -26,12 +26,9 @@
   outline-offset: 2px;
 }
 
-/* Scaled up alongside its two neighbors on phones, keeping the same
-   proportion to them (slightly smaller, as on desktop) rather than
-   staying at the small desktop size in a much roomier mobile header. */
-@media (max-width: 640px) {
-  .theme-toggle {
-    width: 40px;
-    height: 40px;
-  }
-}
+/* NOTE: this button is intentionally NOT enlarged for mobile here anymore.
+   It stays at the normal (desktop) 26px size on every page by default. Only
+   the home/artist-select screen opts back into a bigger mobile size for it
+   — see the ".artist-select-header .theme-toggle" mobile rule in
+   ArtistSelect.css. Intro and ArtistGallery therefore keep this same size
+   on mobile as they do on desktop. */
