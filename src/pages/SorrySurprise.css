@@ -104,6 +104,10 @@
   color: var(--text);
 }
 
+.sorry-smiley {
+  color: #ff3b5c;
+}
+
 /* --- Telegram-style tap-to-reveal spoiler on "دوستت دارم" --- */
 
 .spoiler {
