@@ -229,10 +229,13 @@
     padding-top: max(14px, env(safe-area-inset-top));
     padding-bottom: max(14px, env(safe-area-inset-bottom));
     /* Pinned to the top, like any normal app header — not centered as a
-       block. Any leftover vertical space (now that the gallery hugs its
-       own content) simply falls below the dots as breathing room, which
-       reads as a normal page rather than a header floating mid-screen. */
-    gap: 14px;
+       block. The gap scales with viewport height (rather than a fixed
+       14px) so the breathing room between sections grows on tall phones
+       instead of collapsing into one big unstyled void right before the
+       footer — the rest of that leftover space is still absorbed by the
+       footer's own margin-top: auto below, but there's now much less of
+       it left to absorb. */
+    gap: clamp(14px, 3.6vh, 28px);
   }
 
   /* --- Header: logo + icons only on mobile — the credit line moves to
@@ -244,14 +247,14 @@
     gap: 8px;
   }
   .wordmark {
-    font-size: 22px;
+    font-size: 25px;
   }
   .wordmark-squiggle {
-    width: 52px;
+    width: 58px;
   }
   .header-right {
     flex: 0 0 auto;
-    gap: 8px;
+    gap: 10px;
   }
   .header-sub-wrap {
     display: none;
@@ -275,26 +278,34 @@
     border-radius: var(--radius-md);
   }
   .artist-info {
-    margin-top: 0;
+    margin-top: clamp(18px, 5vh, 34px);
+  }
+  .artist-info-name {
+    font-size: clamp(24px, 7.5vw, 32px);
   }
   .artist-info-eyebrow {
-    font-size: 10.5px;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+  .artist-info-tagline {
+    margin-top: 8px;
+    font-size: clamp(15px, 4.2vw, 18px);
   }
 
   /* Dots come back on mobile (desktop relies on the wide gallery itself
      for a sense of position, but with several small peeking cards a
      phone screen benefits from an explicit position indicator) — sized
-     down and tightened so they read as a compact page indicator. */
+     to match the rest of the enlarged mobile layout. */
   .artist-dots {
-    margin-top: 0;
-    gap: 6px;
+    margin-top: clamp(14px, 4vh, 28px);
+    gap: 10px;
   }
   .artist-dot {
-    width: 5px;
-    height: 5px;
+    width: 7px;
+    height: 7px;
   }
   .artist-dot.is-active {
-    width: 16px;
+    width: 24px;
   }
 
   /* Footer credit line: pinned to the very bottom of the screen.
@@ -306,28 +317,28 @@
     display: flex;
     justify-content: center;
     margin-top: auto;
-    padding-top: 18px;
+    padding-top: clamp(20px, 6vh, 40px);
   }
   .mobile-credit-footer .header-sub {
-    font-size: 12.5px;
-    gap: 5px;
+    font-size: 15px;
+    gap: 7px;
     color: var(--text-dim);
   }
   .mobile-credit-footer .heart {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
   }
 }
 
 @media (max-width: 400px) {
   .wordmark {
-    font-size: 19px;
+    font-size: 21px;
   }
   .wordmark-squiggle {
-    width: 42px;
+    width: 46px;
   }
   .header-right {
-    gap: 6px;
+    gap: 8px;
   }
   .header-sub {
     font-size: 11.5px;
