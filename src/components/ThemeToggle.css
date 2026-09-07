@@ -25,3 +25,13 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
+
+/* Scaled up alongside its two neighbors on phones, keeping the same
+   proportion to them (slightly smaller, as on desktop) rather than
+   staying at the small desktop size in a much roomier mobile header. */
+@media (max-width: 640px) {
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+  }
+}
