@@ -221,6 +221,12 @@
     padding-right: max(14px, env(safe-area-inset-right));
     padding-top: max(14px, env(safe-area-inset-top));
     padding-bottom: max(14px, env(safe-area-inset-bottom));
+    /* The content block (header + gallery + info + dots) no longer forces
+       itself to fill the full screen height (gallery-frame gave that up —
+       see below), so it's centered as one composed group instead of being
+       pinned to the top with a lopsided empty gap at the bottom. */
+    justify-content: center;
+    gap: 14px;
   }
 
   /* --- Header: logo + icons on row 1, credit line on row 2 --- */
@@ -239,7 +245,7 @@
     flex: 1 1 auto;
     flex-wrap: wrap;
     justify-content: flex-end;
-    row-gap: 8px;
+    row-gap: 6px;
     gap: 8px;
   }
   /* Visual order is set with `order`, independent of DOM order: the icon
@@ -262,14 +268,25 @@
     display: none;
   }
 
-  /* --- Gallery: smaller "peek" cards (see itemScale in ArtistSelect.jsx),
-     more vertical room now that the header is more compact --- */
+  /* --- Gallery: a compact, self-sized card instead of a tall glass panel
+     with the actual cards floating in the middle of it. `flex: 1 1 auto`
+     used to force this to fill *all* leftover vertical space no matter
+     how small the cards inside were; here it instead sizes itself off its
+     own aspect-ratio, hugging the card row so the glass panel is only as
+     big as what's actually on it — and everything freed up shows the real
+     background through, per the request for more of it to be visible. The
+     ratio (wider than the ~0.78 portrait card itself) is what leaves room
+     for neighboring cards to peek in on both sides. */
   .gallery-frame {
-    margin-top: 10px;
+    flex: 0 0 auto;
+    width: 100%;
+    aspect-ratio: 6 / 5;
+    max-height: 46vh;
+    margin-top: 0;
     border-radius: var(--radius-md);
   }
   .artist-info {
-    margin-top: 10px;
+    margin-top: 0;
   }
   .artist-info-eyebrow {
     font-size: 10.5px;
@@ -280,7 +297,7 @@
      phone screen benefits from an explicit position indicator) — sized
      down and tightened so they read as a compact page indicator. */
   .artist-dots {
-    margin-top: 10px;
+    margin-top: 0;
     gap: 6px;
   }
   .artist-dot {
@@ -308,15 +325,15 @@
 }
 
 @media (max-height: 640px) {
-  .artist-info {
-    margin-top: 8px;
-  }
   .artist-info-tagline {
     font-size: 13px;
     margin-top: 3px;
   }
-  .artist-dots {
-    margin-top: 8px;
+}
+
+@media (max-width: 640px) and (max-height: 640px) {
+  .artist-select {
+    gap: 8px;
   }
 }
 
