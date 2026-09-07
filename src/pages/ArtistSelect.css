@@ -67,7 +67,11 @@
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 500;
-  font-size: clamp(22px, 4vw, 30px);
+  /* Slightly smaller than .wordmark's clamp(22px, 4vw, 30px) on purpose:
+     "by Mojtaba" has descenders (y, j) that "Farnaz Art" doesn't, which
+     makes it read taller/heavier at the identical font-size. Scaling down
+     ~7% compensates so the two read as visually equal in weight. */
+  font-size: clamp(20.5px, 3.7vw, 28px);
   letter-spacing: 0.02em;
   color: var(--text);
   white-space: nowrap;
