@@ -11,14 +11,25 @@
 
 .sorry-wall {
   position: absolute;
-  inset: 0;
+  /* Was `inset: 0` + `padding: 6vh 4vw` — that combination kept every row
+     of words a fixed distance in from the real screen edges, which is what
+     left blank, word-free margins along the top/bottom/sides and empty
+     corners. Extending the box itself outward by roughly that same amount
+     (instead of padding it inward) means words now tile all the way to —
+     and slightly past — the true edges. The overflow this creates is cut
+     off by .sorry-surprise's own `overflow: hidden`, so what's left is
+     words visibly reaching (and being cleanly clipped at) every edge and
+     corner, rather than a gap before them. */
+  top: -6vh;
+  right: -4vw;
+  bottom: -6vh;
+  left: -4vw;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
   align-items: center;
   justify-content: center;
   gap: clamp(10px, 2.4vw, 26px) clamp(14px, 3vw, 34px);
-  padding: 6vh 4vw;
   overflow: hidden;
   pointer-events: none;
   user-select: none;
