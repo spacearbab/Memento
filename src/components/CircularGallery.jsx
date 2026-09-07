@@ -145,7 +145,7 @@ function createTextTexture(gl, text, font = 'bold 30px monospace', color = 'blac
 }
 
 class Title {
-  constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px sans-serif' }) {
+  constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px sans-serif', titleScale = 0.15 }) {
     autoBind(this);
     this.gl = gl;
     this.plane = plane;
@@ -153,6 +153,13 @@ class Title {
     this.text = text;
     this.textColor = textColor;
     this.font = font;
+    // How tall the baked-in card label renders, as a fraction of the
+    // card's own height — independent of the `font` pixel size above
+    // (which only controls the texture's resolution/aspect, not its
+    // final on-screen size). Callers can raise this for a context that
+    // wants a more prominent label (see ArtistSelect's mobile itemScale
+    // pattern) without touching the desktop default.
+    this.titleScale = titleScale;
     this.createMesh();
   }
   createMesh() {
@@ -185,7 +192,7 @@ class Title {
     });
     this.mesh = new Mesh(this.gl, { geometry, program });
     const aspect = width / height;
-    const textHeight = this.plane.scale.y * 0.15;
+    const textHeight = this.plane.scale.y * this.titleScale;
     const textWidth = textHeight * aspect;
     this.mesh.scale.set(textWidth, textHeight, 1);
     this.mesh.position.y = -this.plane.scale.y * 0.5 - textHeight * 0.5 - 0.05;
@@ -221,7 +228,8 @@ class Media {
     textColor,
     borderRadius = 0,
     font,
-    itemScale = 1
+    itemScale = 1,
+    titleScale = 0.15
   }) {
     this.extra = 0;
     this.geometry = geometry;
@@ -238,6 +246,7 @@ class Media {
     this.textColor = textColor;
     this.borderRadius = borderRadius;
     this.font = font;
+    this.titleScale = titleScale;
     // Card width as a fraction of the viewport, independent of the
     // container's own aspect ratio. The base "700" size was tuned for a
     // wide desktop frame — on a narrow/tall mobile frame the same formula
@@ -341,7 +350,8 @@ class Media {
       renderer: this.renderer,
       text: this.text,
       textColor: this.textColor,
-      font: this.font
+      font: this.font,
+      titleScale: this.titleScale
     });
   }
   setTextColor(color) {
@@ -423,6 +433,7 @@ class App {
       scrollSpeed = 2,
       scrollEase = 0.05,
       itemScale = 1,
+      titleScale = 0.15,
       onItemClick = null,
       onActiveIndexChange = null,
       startIndex = 0
@@ -450,7 +461,7 @@ class App {
     this.createScene();
     this.onResize();
     this.createGeometry();
-    this.createMedias(items, bend, textColor, borderRadius, font, itemScale);
+    this.createMedias(items, bend, textColor, borderRadius, font, itemScale, titleScale);
     // Land directly on a given artist instead of always starting at index 0
     // — e.g. so returning from a gallery re-centers on whichever artist was
     // open, rather than resetting to the first one.
@@ -487,7 +498,7 @@ class App {
       widthSegments: 100
     });
   }
-  createMedias(items, bend = 1, textColor, borderRadius, font, itemScale = 1) {
+  createMedias(items, bend = 1, textColor, borderRadius, font, itemScale = 1, titleScale = 0.15) {
     const defaultItems = [
       { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: 'Bridge' },
       { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Desk Setup' },
@@ -524,7 +535,8 @@ class App {
         textColor,
         borderRadius,
         font,
-        itemScale
+        itemScale,
+        titleScale
       });
     });
   }
@@ -721,6 +733,7 @@ export default function CircularGallery({
   scrollSpeed = 2,
   scrollEase = 0.05,
   itemScale = 1,
+  titleScale = 0.15,
   startIndex = 0,
   onSelect,
   onActiveIndexChange
@@ -764,6 +777,7 @@ export default function CircularGallery({
         scrollSpeed,
         scrollEase,
         itemScale,
+        titleScale,
         startIndex,
         onItemClick: index => onSelectRef.current && onSelectRef.current(index),
         onActiveIndexChange: index => onActiveIndexChangeRef.current && onActiveIndexChangeRef.current(index)
@@ -779,7 +793,7 @@ export default function CircularGallery({
     // Deliberately excludes onSelect/onActiveIndexChange (see comment above)
     // and textColor (see comment above the appRef declaration).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, bend, borderRadius, font, fontUrl, scrollSpeed, scrollEase, itemScale, startIndex]);
+  }, [items, bend, borderRadius, font, fontUrl, scrollSpeed, scrollEase, itemScale, titleScale, startIndex]);
 
   // Repaints the labels in place whenever textColor changes after mount,
   // instead of forcing the effect above to rebuild the scene.
