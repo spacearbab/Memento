@@ -221,19 +221,23 @@
     padding-right: max(14px, env(safe-area-inset-right));
     padding-top: max(14px, env(safe-area-inset-top));
     padding-bottom: max(14px, env(safe-area-inset-bottom));
-    /* The content block (header + gallery + info + dots) no longer forces
-       itself to fill the full screen height (gallery-frame gave that up —
-       see below), so it's centered as one composed group instead of being
-       pinned to the top with a lopsided empty gap at the bottom. */
-    justify-content: center;
+    /* Pinned to the top, like any normal app header — not centered as a
+       block. Any leftover vertical space (now that the gallery hugs its
+       own content) simply falls below the dots as breathing room, which
+       reads as a normal page rather than a header floating mid-screen. */
     gap: 14px;
   }
 
   /* --- Header: logo + icons on row 1, credit line on row 2 --- */
   .artist-select-header {
+    position: relative;
     flex-wrap: nowrap;
     align-items: flex-start;
     gap: 8px;
+    /* Reserves room below row 1 for the credit line, which is positioned
+       absolutely (see .header-sub-wrap) so it can center on the *whole*
+       header instead of being trapped inside header-right's narrower box. */
+    margin-bottom: 26px;
   }
   .wordmark {
     font-size: 22px;
@@ -242,19 +246,21 @@
     width: 52px;
   }
   .header-right {
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    row-gap: 6px;
+    flex: 0 0 auto;
     gap: 8px;
   }
-  /* Visual order is set with `order`, independent of DOM order: the icon
-     buttons (default order 0) stay on the top row next to the logo, and
-     the credit line is pushed onto its own full-width row beneath them. */
+  /* Taken out of normal flow and centered on the full header width, not
+     on header-right's own (right-hand, icon-sized) box — that mismatch
+     was what made this line look disconnected from the logo, off-center
+     relative to the page as a whole. */
   .header-sub-wrap {
-    order: 5;
-    flex: 1 1 100%;
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    margin-top: 6px;
     align-items: center;
+    white-space: nowrap;
   }
   .header-sub {
     font-size: 12.5px;
