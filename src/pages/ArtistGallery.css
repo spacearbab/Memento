@@ -1,0 +1,314 @@
+.artist-gallery {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  animation: gallery-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes gallery-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Framed (non-fullscreen) mode: its own header row above the
+   image, distinct from the floating fullscreen chrome further down. ---------- */
+
+.gallery-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-bottom: 14px;
+}
+
+.gallery-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.gallery-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+}
+
+.gallery-heading-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(16px, 3.4vw, 22px);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-heading-meta {
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-pop);
+}
+
+@media (max-width: 640px) {
+  .gallery-heading {
+    text-align: left;
+  }
+  .gallery-header {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .gallery-heading-meta {
+    display: none;
+  }
+}
+
+/* ---------- .slider-viewport: pure layout/centering, and (in fullscreen)
+   the thing that breaks out to cover the screen. Never has its own visible
+   border — that's .slider-frame, the actual artwork box, nested inside. ---------- */
+
+.slider-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-viewport.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+/* Fullscreen + square only: fills the letterboxed margins around the
+   (now smaller, centered) square with a heavily blurred, darkened,
+   oversized copy of the current artwork itself — instead of the site's
+   normal background showing through — so the backdrop always belongs to
+   the piece being viewed, like ambient lighting bleeding off the frame. */
+.ambient-backdrop {
+  position: absolute;
+  inset: -5%;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(70px) saturate(130%) brightness(0.55);
+  transform: scale(1.15);
+  transition: background-image 0.25s ease;
+}
+
+.ambient-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 8, 0.35);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* ---------- The frame around the (single, never-remounted) MorphSlider.
+   Fills its viewport by default; gets an explicit measured pixel size only
+   in square mode (see useSquareFit) so it's always the largest square that
+   fits, whether framed or fullscreen. ---------- */
+
+.slider-frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 var(--highlight-line) inset,
+    0 30px 80px var(--shadow-color),
+    0 0 70px var(--theme-glow);
+  touch-action: none;
+  cursor: zoom-in;
+  transition:
+    width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.45s ease;
+}
+
+.slider-viewport.is-fullscreen .slider-frame {
+  cursor: zoom-out;
+}
+
+/* Full-bleed only applies to fullscreen + rectangle (the default look):
+   edge-to-edge, no rounding. Fullscreen + square keeps the rounded glass
+   frame since it's a smaller card floating in the middle of the screen. */
+.slider-frame.is-fullscreen-bleed {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* ---------- Fullscreen-only floating chrome: a back chip top-left, an
+   identity chip top-right. Pinned to the actual screen corners (lives in
+   .slider-viewport, not .slider-frame) so it stays put even when the frame
+   itself shrinks to a centered square. Only rendered in fullscreen — the
+   framed view uses .gallery-header above instead. ---------- */
+
+.gallery-chrome {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: max(14px, env(safe-area-inset-left));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-chrome > * {
+  pointer-events: auto;
+}
+
+.artist-chip {
+  max-width: min(60%, 320px);
+  padding: 9px 15px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    0 1px 0 var(--highlight-line-strong) inset,
+    0 8px 24px var(--shadow-color);
+  text-align: right;
+}
+
+.artist-chip-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(13px, 3vw, 17px);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-chip-meta {
+  margin-top: 2px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent-pop);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Our own caption (replaces MorphSlider's built-in one so its
+   content can differ by mode without ever changing the `items` prop). Lives
+   inside .slider-frame so it always tracks the artwork itself. ---------- */
+
+.custom-caption {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  z-index: 4;
+  max-width: 55%;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: rgba(10, 10, 12, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-caption.is-count {
+  max-width: none;
+  width: fit-content;
+}
+
+/* The tagline caption can wrap to two lines on narrow screens, so on mobile
+   the dots (rendered centered by the slider itself, independent of this box)
+   need real clearance above it. On desktop the caption is normally one line,
+   so the dots can sit close to the bottom like everywhere else. */
+.slider-viewport.is-fullscreen .morph-slider-indicators {
+  bottom: 56px;
+}
+
+@media (max-width: 640px) {
+  .custom-caption.is-tagline {
+    max-width: 68%;
+    font-size: 13px;
+  }
+  .slider-viewport.is-fullscreen .morph-slider-indicators {
+    bottom: 88px;
+  }
+}
+
+/* ---------- Auto-hide (fullscreen only — the framed header never overlaps
+   the artwork, so it never needs to hide). ---------- */
+
+.slider-viewport.chrome-hidden .gallery-chrome,
+.slider-viewport.chrome-hidden .custom-caption {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.slider-viewport.chrome-hidden .custom-caption {
+  transform: translateY(8px);
+}
+
+.slider-viewport.chrome-hidden .morph-slider-controls,
+.slider-viewport.chrome-hidden .morph-slider-indicators {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+@media (max-width: 640px) {
+  .artist-gallery {
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom))
+      max(10px, env(safe-area-inset-left));
+  }
+  .slider-frame {
+    border-radius: var(--radius-md);
+  }
+  .artist-chip {
+    padding: 7px 11px;
+    border-radius: 13px;
+  }
+  .custom-caption {
+    font-size: 12.5px;
+    padding: 7px 12px;
+  }
+}

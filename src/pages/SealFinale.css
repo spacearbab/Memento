@@ -1,0 +1,88 @@
+/* Deliberately no `background` here — unlike the old finale screen, this
+   page is transparent so the app shell's own MoltenMetal background (and
+   veil) already mounted behind it in App.jsx show straight through. That is
+   the "default site background" this page is built to sit on top of. */
+.seal-finale {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  animation: seal-finale-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes seal-finale-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.seal-finale-body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Wider than before on purpose: growing the gap (rather than just
+     bottom-padding) pushes the Continue button noticeably further down
+     while keeping the whole seal+button group centered as a block, which
+     also nudges the seal itself a little higher — both of which were asked
+     for together. */
+  gap: clamp(48px, 11vh, 108px);
+  padding: 24px;
+}
+
+.seal-stage {
+  /* The whole medallion (wax body + rim + logo), not just the logo mark
+     inside it — sized here, not via WaxSeal's own logoStyle.size, which
+     only scales the F glyph relative to the seal, not the seal itself. */
+  width: min(420px, 76vw);
+  aspect-ratio: 1 / 1;
+  filter: drop-shadow(0 30px 70px var(--shadow-color));
+}
+
+.seal-back {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  inset-inline-start: max(18px, env(safe-area-inset-left));
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 var(--highlight-line-strong) inset,
+    0 8px 24px var(--shadow-color);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.seal-back:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border-strong);
+  transform: translateX(-2px);
+}
+
+.seal-back:active {
+  transform: scale(0.92);
+}
+
+.seal-back:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+
