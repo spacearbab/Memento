@@ -204,46 +204,106 @@
   }
 }
 
+/* ---------------------------------------------------------------------
+   Mobile: this is its own layout, not a shrunk-down copy of the desktop
+   one. Desktop puts everything (wordmark, credit line, icon buttons) on
+   one wide horizontal band because there's room to spare. On a phone that
+   band would either wrap awkwardly or eat too much vertical space that
+   the gallery needs, so here the header becomes two compact rows — a
+   top row with the logo and icon buttons, and a small centered credit
+   line underneath — and the gallery/card carousel gets a phone-native
+   "peek" treatment instead of the desktop's wide cinematic wall (sizing
+   for the cards themselves lives in ArtistSelect.jsx via itemScale).
+   --------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .artist-select {
-    padding-left: max(16px, env(safe-area-inset-left));
-    padding-right: max(16px, env(safe-area-inset-right));
-    padding-top: max(18px, env(safe-area-inset-top));
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    padding-left: max(14px, env(safe-area-inset-left));
+    padding-right: max(14px, env(safe-area-inset-right));
+    padding-top: max(14px, env(safe-area-inset-top));
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
   }
+
+  /* --- Header: logo + icons on row 1, credit line on row 2 --- */
+  .artist-select-header {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .wordmark {
+    font-size: 22px;
+  }
+  .wordmark-squiggle {
+    width: 52px;
+  }
+  .header-right {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 8px;
+    gap: 8px;
+  }
+  /* Visual order is set with `order`, independent of DOM order: the icon
+     buttons (default order 0) stay on the top row next to the logo, and
+     the credit line is pushed onto its own full-width row beneath them. */
+  .header-sub-wrap {
+    order: 5;
+    flex: 1 1 100%;
+    align-items: center;
+  }
+  .header-sub {
+    font-size: 12.5px;
+    gap: 5px;
+  }
+  .header-sub .heart {
+    width: 12px;
+    height: 12px;
+  }
+  .header-sub-squiggle {
+    display: none;
+  }
+
+  /* --- Gallery: smaller "peek" cards (see itemScale in ArtistSelect.jsx),
+     more vertical room now that the header is more compact --- */
   .gallery-frame {
-    margin-top: 12px;
+    margin-top: 10px;
     border-radius: var(--radius-md);
   }
   .artist-info {
-    margin-top: 12px;
+    margin-top: 10px;
   }
   .artist-info-eyebrow {
     font-size: 10.5px;
   }
+
+  /* Dots come back on mobile (desktop relies on the wide gallery itself
+     for a sense of position, but with several small peeking cards a
+     phone screen benefits from an explicit position indicator) — sized
+     down and tightened so they read as a compact page indicator. */
   .artist-dots {
-    margin-top: 12px;
-    display: none;
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .artist-dot {
+    width: 5px;
+    height: 5px;
+  }
+  .artist-dot.is-active {
+    width: 16px;
   }
 }
 
 @media (max-width: 400px) {
-  .artist-select-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  .wordmark {
+    font-size: 19px;
+  }
+  .wordmark-squiggle {
+    width: 42px;
   }
   .header-right {
-    align-items: center;
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    row-gap: 8px;
-    justify-content: space-between;
+    gap: 6px;
   }
   .header-sub {
-    font-size: 17px;
-    white-space: normal;
+    font-size: 11.5px;
   }
 }
 
