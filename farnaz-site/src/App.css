@@ -1,0 +1,26 @@
+.app-shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.app-bg-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(var(--veil-rgb), 0.15) 0%,
+    rgba(var(--veil-rgb), 0.72) 72%,
+    rgba(var(--veil-rgb), 0.92) 100%
+  );
+  pointer-events: none;
+}
