@@ -57,16 +57,21 @@ export default function ArtistSelect({
       <div className="gallery-frame">
         <CircularGallery
           items={galleryItems}
-          bend={isMobile ? 0.35 : 2}
+          bend={isMobile ? 0.45 : 2}
           textColor={galleryTextColor}
           borderRadius={0.14}
           scrollEase={0.075}
           scrollSpeed={isMobile ? 1.6 : 2.4}
-          // Mobile gets its own, much smaller card size (independent of the
-          // frame's aspect ratio — see CircularGallery.jsx) so 2–3 cards
-          // peek in side-by-side, Netflix-row style, instead of one card
-          // filling almost the entire screen.
-          itemScale={isMobile ? 0.5 : 1}
+          // How tall a card renders (as a fraction of the frame's own
+          // height) only depends on itemScale, not on the frame's shape —
+          // so this is tuned together with the mobile `.gallery-frame`
+          // aspect-ratio in ArtistSelect.css: 0.85 fills a similar, un-gappy
+          // proportion of frame height to desktop's itemScale of 1, while
+          // the frame's own (wider, shorter) aspect ratio is what actually
+          // produces the side peeks — the two were previously conflated,
+          // which is what left the oversized empty glass panel around
+          // undersized cards.
+          itemScale={isMobile ? 0.85 : 1}
           fontUrl="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,500&display=swap"
           font={isMobile ? 'italic 24px Fraunces' : 'italic 32px Fraunces'}
           startIndex={initialIndex}
