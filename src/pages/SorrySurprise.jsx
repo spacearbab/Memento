@@ -123,13 +123,15 @@ export default function SorrySurprise({ onBack }) {
 
       <div className="sorry-surprise-body">
         <div className="sorry-card" dir="rtl">
-          <h1 className="sorry-card-title">ببخشید :)</h1>
+          <h1 className="sorry-card-title">
+            ببخشید <span className="sorry-smiley">:)</span>
+          </h1>
 
           <p className="sorry-card-text">متاسفم برای رفتارای این چند روزم.</p>
           <p className="sorry-card-text sorry-card-text-strong">
-            روز تولدت اینجا برات کادو تولدت رو می‌ذارم :){' '}
+            روز تولدت اینجا برات کادو تولدت رو می‌ذارم <span className="sorry-smiley">:)</span>{' '}
             <Spoiler>
-              <DoodleHeart className="sorry-love-heart" size={16} /> دوستت دارم
+              دوستت دارم <DoodleHeart className="sorry-love-heart" size={16} />
             </Spoiler>
           </p>
 
